@@ -8,25 +8,25 @@ Side goals:
 
 Solution Specs:
 1. Inputs:
-  a. fname - a string with the name of the file inputted; will accept any file type (.dat included) that Python's built in csv library can parse
-  b. col_name_1, col_name_2 - two strings that are the headers of the two columns that are compared
-  c. goal_col_name - a string that represents the header of the column to be returned
-  d. Example: fname is soccer.dat, col_name_1 and col_name_2 are 'F' and 'A', and goal_col_name is 'Team'
+  - fname - a string with the name of the file inputted; will accept any file type (.dat included) that Python's built in csv library can parse
+  - col_name_1, col_name_2 - two strings that are the headers of the two columns that are compared
+  - goal_col_name - a string that represents the header of the column to be returned
+  * Example: fname is soccer.dat, col_name_1 and col_name_2 are 'F' and 'A', and goal_col_name is 'Team'
 
 2. Output:
-  a. if error -> None paired with a print statement explaining the error
-  b. else -> the value in goal_col_name col in the the row with the minimum difference between the values in its compared columns (with headers col_name_1 and col_name_2)
+  - if error -> None paired with a print statement explaining the error
+  - else -> the value in goal_col_name col in the the row with the minimum difference between the values in its compared columns (with headers col_name_1 and col_name_2)
 
 3. Input formatting requirements:
-  a. column indexes need to correspond to header indexes - format alignment matters
-  b. columns need to be separated by spaces
-  c. values in compared columns do not need to be digits and may be optional but at least one set of two digits are needed to compute a minimum difference
-  d. table cells can either be start or end indexed (i.e. begin at the beginning index of the header or end at the ending index of the header)
+  - column indexes need to correspond to header indexes - format alignment matters
+  - columns need to be separated by spaces
+  - values in compared columns do not need to be digits and may be optional but at least one set of two digits are needed to compute a minimum difference
+  - table cells can either be start or end indexed (i.e. begin at the beginning index of the header or end at the ending index of the header)
   
 4. Usage would look like calling `python solution.py calc_smallest_spread {fname} {colName1} {colName2} {goalColName}`
-  a. Running `python solution.py calc_smallest_spread 'soccer.dat' 'F' 'A' 'Team'` returns `Aston_villa`
-  b. Running `python solution.py calc_smallest_spread 'w_data.dat' 'MxT' 'MnT' 'Dy'` returns `14`
+  - Running `python solution.py calc_smallest_spread 'soccer.dat' 'F' 'A' 'Team'` returns `Aston_villa`
+  - Running `python solution.py calc_smallest_spread 'w_data.dat' 'MxT' 'MnT' 'Dy'` returns `14`
 
 5. Potential sources of expansion:
-  a. can add a comparator function to change how the col_name_1 and col_name_2 values are compared to determine which row to select
-  b. better error handling
+  - can add a comparator function to change how the col_name_1 and col_name_2 values are compared to determine which row to select
+  - better error handling
