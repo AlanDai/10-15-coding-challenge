@@ -1,63 +1,54 @@
 import csv
 import sys
 
-def calcSmallestSpread(fname, colName1, colName2, goalColName):
+def calc_smallest_spread(fname, col_name_1, col_name_2, goal_col_name):
     with open(fname, 'rb') as data:
-        table  = csv.reader(data)
-        
+        table  = filter(lambda row: len(row) > 0, csv.reader(data))
         # find header row and the indexes of the specified columns
-        col1Index = col2Index = headerRow = None
-        for i, row in enumerate(table):
-            if not row: continue
-            row = row[0]
-            if row.find(colName1) != -1 and row.find(colName2) != -1 and row.find(goalColName) != -1:
-                col1Index, col2Index, goalIndex, headerRow = row.find(colName1), row.find(colName2), row.find(goalColName), i
-                break
-
-        # error #1: any of the specified columns not found
-        if col1Index == None or col2Index == None or goalIndex == None:
-            print('The table does not have all three of the headers %s, %s and %s' %(colName1, colName2, goalColName))
-            return
-
-        # check through table rows for the values in the same index range as the specified columns
-        minRowLen = max(col1Index + len(colName1), col2Index + len(colName2), goalIndex + len(goalColName))
-        goalValue, smallestDiff = '', float("inf")
+        col_index_1 = col_index_2 = None
         for row in table:
-            if not row: continue
             row = row[0]
-
-            # error #2: row not long enough to contain both specified columns
-            if len(row) < minRowLen: continue
-
-            # error #3: no space separation for cell - case for both start and end indexed
-            if row[col1Index - 1] != ' ' and row[col1Index + len(colName1)] != ' ': continue
-            if row[col2Index - 1] != ' ' and row[col2Index + len(colName2)] != ' ': continue
-
-            # start indexed
-            if row[col1Index - 1] == ' ' and row[col1Index] != ' ':
-                item1 = row[col1Index:].split(' ')[0]
-                item2 = row[col2Index:].split(' ')[0]
-                curGoalColValue = row[goalIndex:].split(' ')[0]
-            # end indexed
+            if (row.find(col_name_1) != -1 and row.find(col_name_2) != -1 and
+                row.find(goal_col_name) != -1):
+                col_index_1 = row.find(col_name_1)
+                col_index_2 = row.find(col_name_2)
+                goal_index = row.find(goal_col_name)
+                break
+        if col_index_1 is None or col_index_2 is None or goal_index is None:
+            print('The table does not have all three of the inputted headers')
+            return None
+        # check rows for the values that overlap the index of the specified column headers
+        min_row_len = max(col_index_1 + len(col_name_1) + 1,
+            col_index_2 + len(col_name_2) + 1,
+            goal_index + len(goal_col_name) + 1)
+        goal_val, smallest_diff = '', float("inf")
+        for row in table:
+            row = row[0]
+            if len(row) < min_row_len:
+                continue
+            # error: no space separation for cell - case for both start and end indexed
+            if ((row[col_index_1 - 1] != ' ' and row[col_index_1 + len(col_name_1)] != ' ') or
+                (row[col_index_2 - 1] != ' ' and row[col_index_2 + len(col_name_2)] != ' ')):
+                continue
+            # start indexed - e.g. soccer.dat
+            if row[col_index_1 - 1] == ' ' and row[col_index_1] != ' ':
+                item1 = row[col_index_1:].split(' ')[0]
+                item2 = row[col_index_2:].split(' ')[0]
+                cur_goal_val = row[goal_index:].split(' ')[0]
+            # end indexed - e.g. w_data.dat
             else:
-                item1 = row[:col1Index + len(colName1)].split(' ')[-1]
-                item2 = row[:col2Index + len(colName2)].split(' ')[-1]
-                curGoalColValue = row[:goalIndex + len(goalColName)].split(' ')[-1]
-
-            # error #4: the value in the cell is not a digit
-            if not item1.isdigit() or not item2.isdigit(): continue
-
+                item1 = row[:col_index_1 + len(col_name_1)].split(' ')[-1]
+                item2 = row[:col_index_2 + len(col_name_2)].split(' ')[-1]
+                cur_goal_val = row[:goal_index + len(goal_col_name)].split(' ')[-1]
+            if not item1.isdigit() or not item2.isdigit():
+                continue
             diff = abs(int(item1) - int(item2))
-            if smallestDiff > diff:
-                smallestDiff, goalValue = diff, curGoalColValue
-    
-        # error #5: every row hit an error (#2, #3, and #4) such that no diff can be computed
-        if not goalValue:
-            print('There were no suitable values to compare in the two headers (%s and %s) such that a minimum difference could be found' (colName1, colName2))
-        else:
-            print(goalValue)
-        
-        return
+            if smallest_diff > diff:
+                smallest_diff, goal_val = diff, cur_goal_val
+        if not goal_val:
+            print('There were no suitable values to compare')
+        print(goal_val)
+        return goal_val
 
 if __name__ == '__main__':
     args = sys.argv
